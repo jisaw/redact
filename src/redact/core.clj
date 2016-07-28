@@ -14,13 +14,15 @@
 
 (defn get-target-text
   ;; Takes a vector of args and returns a String of a text file
-  ([args]
+  ([args] (get-target-text args ""))
+  ([args result]
    (if (empty? args)
-     (println "No text file was found!")
-     (if (.contains (first args) ".txt")
-       (str (slurp (first args)))
-       (get-target-text (rest args)))))
-  ;; TODO: Change to regex match for mutliple text based file types
+     result
+     (get-target-text (rest args) (if (boolean (re-find #"(.+\.[^csv\s])" (first args)))
+                                    (str result (slurp (first args)))
+                                    (if (not (boolean (re-find #"(.+\.csv|.+,.+)" (first args))))
+                                      (if (boolean (re-find #"\s" (str/trim (first args))))
+                                        (str result (first args))))))))
   
  )
 
@@ -36,11 +38,15 @@
   ([args stoplist]
    (if (empty? args)
      stoplist
-     (gen-stoplist (rest args) (if (.contains (first args) ".csv")
+     (gen-stoplist (rest args) (if (boolean (re-find #"(.+\.csv)" (first args)))
                                  (into [] (concat stoplist (read-csv (first args))))
-                                 (if (.contains (first args) ".txt")
+                                 (if (boolean (re-find #"(.+\..[^csv\s])" (first args)))
                                    stoplist
-                                   (into [] (concat stoplist [(first args)] ))))))))
+                                   (if (boolean (re-find #"(.*,.*)" (first args))) 
+                                     (into [] (concat stoplist (str/split (first args) #",")))
+                                     (if (boolean (re-find #"(\s)" (str/trim (first args))))
+                                       stoplist
+                                       (into [] (concat stoplist [(first args)] ))))))))))
 
 (defn -main
   [& args]
