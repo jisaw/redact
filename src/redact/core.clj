@@ -13,7 +13,7 @@
   )
 
 (defn get-target-text
-  ;; Takes a vector of args and returns a String of a text file
+  ;; Takes a vector of args and returns a String of a text file or and sentances
   ([args] (get-target-text args ""))
   ([args result]
    (if (empty? args)
@@ -22,8 +22,7 @@
                                     (str result (slurp (first args)))
                                     (if (not (boolean (re-find #"(.+\.csv|.+,.+)" (first args))))
                                       (if (boolean (re-find #"\s" (str/trim (first args))))
-                                        (str result (first args))))))))
-  
+                                        (str result (first args) "\n")))))))
  )
 
 (defn read-csv
