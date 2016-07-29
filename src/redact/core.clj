@@ -9,7 +9,7 @@
   ([target stoplist]
    (if (empty? stoplist)
      (println target)
-     (redact-doc (str/replace target (re-pattern (first stoplist)) "REDACTED") (rest stoplist))))
+     (redact-doc (str/replace target (re-pattern (str "\\s(" (first stoplist) ")\\s")) " REDACTED ") (rest stoplist))))
   )
 
 (defn get-target-text
