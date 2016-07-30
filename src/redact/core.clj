@@ -8,8 +8,8 @@
   ;; Reads the file line by line and redacts all the matched words
   ([target stoplist]
    (if (empty? stoplist)
-     (println target)
-     (redact-doc (str/replace target (re-pattern (str "\\s(" (first stoplist) ")\\s")) " REDACTED ") (rest stoplist))))
+     (str/trim target)
+     (redact-doc (str/replace target (re-pattern (str "\\s(" (first stoplist) ")(\\s|$)")) " REDACTED ") (rest stoplist))))
   )
 
 (defn get-target-text
@@ -49,5 +49,5 @@
 
 (defn -main
   [& args]
-  (redact-doc (get-target-text args) (gen-stoplist args))
+  (println (redact-doc (get-target-text args) (gen-stoplist args)))
 )
