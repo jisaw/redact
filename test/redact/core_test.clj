@@ -10,7 +10,7 @@
 
 (deftest get-target-text-test
   (testing "Given a file name or sentance that file name or setance is returned as a single string"
-    (is (= (get-target-text ["this is sentance one" "this is sentance two" "this is the last sentance three"]) (str "this is sentance one\n" "this is sentance two\n" "this is the last sentance three\n") ))
+    (is (= (get-target-text ["this is sentance one" "this is sentance two" "this is the last sentance three"]) (str "this is sentance one " "this is sentance two " "this is the last sentance three ") ))
     (is (= (get-target-text ["this" "does" "not" "match" "anything,that,I,care" "about.csv"]) nil))))
 
 (deftest gen-stoplist-test
