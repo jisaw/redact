@@ -17,7 +17,7 @@
   (if (boolean (re-find #"(.+\.[^csv\s])" arg))
     (assoc args-map :target (str/trim (str/join " " [(:target args-map) (slurp arg)])))
     (if (boolean (re-find  #"(.+\.csv)" arg))
-      (assoc args-map :stoplist (concat (:stoplist args-map) (into '() read-csv arg))) ;;handle CSV
+      (assoc args-map :stoplist (concat (:stoplist args-map) (into '() (read-csv arg)))) ;;handle CSV
       (if (boolean (re-find #"(.*,.*)" arg))
         (assoc args-map :stoplist (concat (:stoplist args-map) (into '() (str/split arg #",")))) ;;handle comma seperated string
         (if (boolean (re-find #"\s" (str/trim arg)))

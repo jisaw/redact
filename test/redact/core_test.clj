@@ -8,18 +8,16 @@
   (testing "Reading in a CSV file and returning a vector of words"
     (is (= (read-csv "resources/test.csv")  ["apple" "orange" "banana" "grape" "tomatoe" "potatoe" "carrot"]))))
 
-(deftest get-target-text-test
-  (testing "Given a file name or sentance that file name or setance is returned as a single string"
-    (is (= (get-target-text ["this is sentance one" "this is sentance two" "this is the last sentance three"]) (str "this is sentance one " "this is sentance two " "this is the last sentance three ") ))
-    (is (= (get-target-text ["this" "does" "not" "match" "anything,that,I,care" "about.csv"]) nil))))
-
-(deftest gen-stoplist-test
-  (testing "Given a single word, csv, or comma delimited string return a list of those stop words"
-    (is (= (gen-stoplist ["this,that,the,other"]) ["this" "that"  "the" "other"]))
-    (is (= (gen-stoplist ["resources/test.csv"]) ["apple" "orange" "banana" "grape" "tomatoe" "potatoe" "carrot"]))
-    (is (= (gen-stoplist ["this" "twin" "sentance"] ["this" "twin" "sentance"])))))
-
 (deftest redact-doc-test
   (testing "Given a target string and a stoplist vector return the redacted string"
     (is (= (redact-doc "this is a sample string" ["is" "string"]) "this REDACTED a sample REDACTED"))
     (is (= (redact-doc "this is another sample that has a one letter word" ["a" "letter"]) "this is another sample that has REDACTED one REDACTED word"))))
+
+(deftest add-arg-to-map-test
+  (testing "Pass a string and a map and get a map containing that string back"
+    (is (= (add-arg-to-map "this" {:target "" :stoplist '()}) {:target "" :stoplist '("this")}))
+    (is (= (add-arg-to-map "one,two,three" {:target "" :stoplist '()}) {:target "" :stoplist '("three" "two" "one")}))
+    (is (= (add-arg-to-map "this is an example sentance" {:target "" :stoplist '()}) {:target "this is an example sentance" :stoplist '()}))
+    (is (= (add-arg-to-map "resources/test.txt" {:target "" :stoplist '()})) {:target "This is a text file\nIt has a couple different things in it\nThat are all on different lines\n" :stoplist '()})
+    (is (= (add-arg-to-map "resources/test.csv" {:target "" :stoplist '()})) {:target "" :stoplist '("apple" "orange" "banana" "grape" "tomatoe" "potatoe" "carrot")}))
+  )
